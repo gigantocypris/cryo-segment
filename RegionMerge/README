@@ -1,0 +1,13 @@
+1.main3D.m is the driver. A user needs to specify the name of the input *.mrc file (that stores
+preprocessed tomogram slices) in the code.  Each slice in the input *.mrc volume file should 
+contain a zero or non-zero object index label for each pixel.  Zero is used to represent the background 
+and a nonzero integer i indicates that the pixel belongs to the i-th object.  
+The code will merge all neighbouring object pixels (In 26 directions([0,1,-1],[0,1,-1],[0,1,-1])\[0,0,0])) and writeout the merged volume to an output file. 
+
+2.The code will output the '*_3D.mrc' file where all object regions are labeled by 100 and output the '*_3D_color.mrc' file where all object regions are labeled by object index i.
+
+3.The code will output the first 10 regions with the most pixels. You can change the code in line 97 and line 112 to change the number of regions.
+
+4.EMIODist2 is the package for  reading and outputing the mrc files.
+
+  

@@ -1,0 +1,11 @@
+mainall.py performs two tasks:
+1) It uses RL to merge pixels to form several membrane segments.  
+2) It groups segements that are deemed to belong to the same membrane structure and assigns a unique label.  
+
+main7.py performs a parameteric fitting of all segments that belong to the same membrane class
+on each tomogram slice. We assume the shape of each membrane structure is elliptical. The fitted 2D membrane structures are then combined in 3D to form 3D membrane surfaces.
+
+toolbox.py contains many utilities used by mainall.py and main7.py
+
+In the `smalldemo' folder, we provide another mainall.py that demonstrates how handwritten segments in image $maze1.png$ are connected by RL.  It makes no assumption about the shape of the broken segments. The agent starts from the longest segments, and finds the next segment to connect to using the Q-table constructed by the RL algorithm. It repeats this process until it returns to the segment it started from. 
+

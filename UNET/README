@@ -1,0 +1,63 @@
+--------------------------------------------------------
+0. Unzip and upload the source code to the Google Cloud. 
+--------------------------------------------------------
+
+--------------------------------------------------------
+1.Generate the training data.
+--------------------------------------------------------
+1.1 open the file "data/createcirosimnewpart.py" and change the configuration.
+
+Line 108:  img_size=10 #how many images you will generate.
+Line 118:  dir_name='ciro'  # the directory name for generate images.
+
+1.2 Run the python code. It will generate the img files in "data/ciro/".
+
+"*_data.png" is the input image and "*_true.png" is the label image.
+
+--------------------------------------------------------
+2.Train the neural networks.
+--------------------------------------------------------
+
+2.1 run the code train.py and wait for the training finish. The model will save in the "checkpoint/" every 100 epochs.
+
+--------------------------------------------------------
+3.Test model.
+--------------------------------------------------------
+3.1 Generate test data.
+
+Change Line 118 of "data/createcirosimnewpart.py"  to dir_name='val' and run the code to generate the test data.
+
+3.2 test model on one image.
+
+Run the code "visunet.py" to test result on one images. Change the image file by change the code:
+
+Line 31:  image_path = 'data/val/200_3_data.png'
+
+check the results in "\result\vis"
+
+
+3.3 test a group model on a group images.
+
+Run the code "visgroupunet.py" to test result by group. It will test allChange model in "checkpoint/", Change the image file by change the code:
+
+Line 53: image_list=['100_0_data.png','200_0_data.png','300_0_data.png','400_0_data.png','500_0_data.png','600_0_data.png','700_0_data.png','800_0_data.png','900_0_data.png','1000_0_data.png']
+
+check the results in "\result"
+
+3.4 test model on one slice of real membrane files.
+
+Run the code "visunetmen.py",change the configuration as below. 
+
+Line 31 : model_path_root='checkpoint/' #models directory.
+Line 32 : image_path = 'mon_t1_trimmed.rec.nad' #which file used for test.
+Line 36 : model_path=model_list[0] #which model used for test.
+Line 38 : index=100 #which slice used for test.
+
+3.5 test model on all slices of real membrane files.
+Run the code "visunetmen_mrc.py",change the configuration as below. 
+
+Line 31 : model_path_root='checkpoint/' #models directory.
+Line 32 : image_path = 'mon_t1_trimmed.rec.nad' #which file used for test.
+Line 36 : model_path=model_list[0] #which model used for test.
+
+

@@ -1,0 +1,20 @@
+
+1. main3.py is the driver for the 3D Gaussian process based surface fitting. 
+   You need to provide the input as a *.mrc file where each object are labeled by 
+   an unique integer (>0，0 is for the background). The code will go through each object 
+   one by one. It will produce 'mean_mat' which contains the mean of Gaussian distribution 
+   at each voxel. (Stored in pickle format, which can be read and written with the pickle package ).
+
+2. Lines 181-- 230 in main3.py contain the code for generating the anchor point, which a user
+   may modify to adapt to his/her object. For the test membrane structures used for the publication, 
+   randomly generated anchor points on the surface of an ellipsoid are used as the outer anchor points.
+   The inner anchor point may be chosen as the centroid to the points to be fitted.
+
+3  The show.py code can be used to  write the final results as a 'mean_mat' file. 
+   A user need to specify the surface rendering threshold on line 42.
+
+4. A user needs to install the package 'mrcfile' with 'pip install mrcfile'.
+
+
+
+
