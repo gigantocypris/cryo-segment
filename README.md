@@ -19,5 +19,4 @@ Opening MRC files
 https://mrcfile.readthedocs.io/en/stable/usage_guide.html
 
 
-TODO:
-Install napari: https://chanzuckerberg.github.io/cryoet-data-portal/cryoet_data_portal_docsite_napari.html
+
