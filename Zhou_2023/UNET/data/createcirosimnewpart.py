@@ -84,12 +84,12 @@ def noise_generator (noise_type,image,para=0):
         num_salt = np.ceil(amount * image.size * s_vs_p)
         coords = [np.random.randint(0, i , int(num_salt))
               for i in image.shape]
-        out[coords] = 255
+        out[coords[0], coords[1],coords[2]] = 255
         # Generate Pepper '0' noise
         num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
         coords = [np.random.randint(0, i , int(num_pepper))
               for i in image.shape]
-        out[coords] = 0
+        out[coords[0], coords[1],coords[2]] = 0
         return out
     elif noise_type == "poisson":
         vals = len(np.unique(image))
@@ -124,10 +124,10 @@ if not os.path.exists(dir_name):
     
 for index in indexlist:
     for i in range(num_imgs):
-        xy=np.floor(np.random.rand(cir_num,2)*px).astype(np.int)
-        r=(r_range[0]+r_range[1]*np.random.rand(cir_num,2)).astype(np.int)
+        xy=np.floor(np.random.rand(cir_num,2)*px).astype(int)
+        r=(r_range[0]+r_range[1]*np.random.rand(cir_num,2)).astype(int)
         angle=np.random.rand(cir_num,1)*360
-        line=np.random.randint(line_range[0],line_range[1]+1,(cir_num,1)).astype(np.int)
+        line=np.random.randint(line_range[0],line_range[1]+1,(cir_num,1)).astype(int)
         im = np.zeros([px, px], dtype = np.uint8)+148
         im_true= np.zeros([px, px], dtype = np.uint8)
         flagl=np.zeros([cir_num])
@@ -141,8 +141,8 @@ for index in indexlist:
                     break
             if flag:
                 flagl[j]=1
-                cv2.ellipse(im,(xy[j,0],xy[j,1]),(r[j,0],r[j,1]),angle[j],0,360,choice(color_list),line[j])
-                cv2.ellipse(im_true,(xy[j,0],xy[j,1]),(r[j,0],r[j,1]),angle[j],0,360,255,line[j])
+                cv2.ellipse(im,(xy[j,0],xy[j,1]),(r[j,0],r[j,1]),angle[j][0],0,360,choice(color_list),line[j][0])
+                cv2.ellipse(im_true,(xy[j,0],xy[j,1]),(r[j,0],r[j,1]),angle[j][0],0,360,255,line[j][0])
 
             
                 theta=360*np.random.rand(moti_num,1)  
@@ -153,8 +153,8 @@ for index in indexlist:
                 y_e=xy[j,1]+np.sin(theta*np.pi/180)*r_y
                 
                 for q in range(moti_num):
-                    cv2.circle(im,(x_e[q],y_e[q]),r_moti[q],choice(color_list),-1)
-                    cv2.circle(im_true,(x_e[q],y_e[q]),r_moti[q],100,-1)
+                    cv2.circle(im,(int(x_e[q][0]),int(y_e[q][0])),int(r_moti[q][0]),choice(color_list),-1)
+                    cv2.circle(im_true,(int(x_e[q][0]),int(y_e[q][0])),int(r_moti[q][0]),100,-1)
                     #cv2.circle(im,(x_e[q],y_e[q]),r_moti[q],255,-1)
             #plt.imshow(im_plot)
 

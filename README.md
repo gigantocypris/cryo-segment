@@ -30,3 +30,7 @@ Log on to Perlmutter
 > module load pytorch/2.1.0-cu12
 > conda activate cryo
 > cd /global/cfs/cdirs/m3562/users/vidyagan/cryo-segment
+
+Running the Zhou et al pipeline:
+
+> python Zhou_2023/UNET/data/createcirosimnewpart.py
