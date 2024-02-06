@@ -15,7 +15,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import yaml
 import os
-from addict import Dict
+# from addict import Dict
 from glob import glob
 
 
@@ -37,7 +37,8 @@ model_list=glob(model_path_root+'*.pth')
 model_list.sort()
 
 
-image_path_root='data/'+'val'+'/'
+# image_path_root='data/'+'val'+'/'
+image_path_root = 'val'+'/'
 import time
 now = int(round(time.time()*1000))
 now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
@@ -72,7 +73,7 @@ else:
 #CONFIG = Dict(yaml.load(open(config)))
 
 # Label list
-with open('data/files/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -122,8 +123,8 @@ for image_path_base in image_list:
         # Inference
         output = model(image)
         output_original=output
-        output_original_label=np.argmax(output,axis=1)
-        outputnumpy=output_original.numpy()
+        output_original_label=np.argmax(output.cpu(),axis=1)
+        outputnumpy=output_original.cpu().numpy()
         outputcrf=np.squeeze(np.concatenate(outputnumpy, axis = 1))
         
         #print(output)
@@ -154,7 +155,7 @@ for image_path_base in image_list:
         
         ax = plt.subplot(rows, cols, i*cols+3)
         ax.set_title("p map")
-        ax.imshow(np.squeeze(output_original[0,0,:,:]))
+        ax.imshow(np.squeeze(output_original[0,0,:,:].cpu()))
         ax.set_xticks([])
         ax.set_yticks([])
         

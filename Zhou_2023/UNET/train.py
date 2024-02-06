@@ -44,7 +44,7 @@ def train_net(net,
             m.weight.data.normal_(0, 0.01)
             m.bias.data.zero_()    
 
-    dir_data = 'data/ciro'
+    dir_data = 'ciro'
     dir_checkpoint = 'checkpoint'
     load_model='checkpoint/checkpoint_60.pth'
     load_model=[]

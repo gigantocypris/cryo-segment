@@ -162,3 +162,5 @@ cython_debug/
 .DS_Store
 ciro/*
 *.png
+checkpoint/*
+result/*

@@ -115,7 +115,7 @@ line_range=[2,8]
 color_list=[130,140,160]
 inout=[-1,1]
 moti_r_range=[2,3]
-dir_name='ciro'
+dir_name='val'
 if not os.path.exists(dir_name):
     os.mkdir(dir_name)
     for file in glob.glob('files/*.txt'):

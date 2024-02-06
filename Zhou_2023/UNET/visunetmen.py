@@ -18,8 +18,8 @@ from torchvision import transforms
 import cv2
 import matplotlib.pyplot as plt
 from glob import glob
-from libsunet.unet import UNet, UNetsmall
-from libsunet.utils import scores,dense_crf
+from unet import UNet, UNetsmall
+from utils import scores #,dense_crf
 from sklearn.preprocessing import scale
 import mrcfile
 
@@ -29,17 +29,17 @@ test_type='ciro'
 modeltype='unet'
 iftureavail=False
 model_path_root='checkpoint/'
-image_path = 'mon_t1_trimmed.rec.nad'
+image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE2'
 outputname=image_path[:-len(os.path.basename(image_path))]+'/test1'
 model_list=glob(model_path_root+'*.pth')
 model_list.sort()
-model_path=model_list[0]
+model_path = 'checkpoint/checkpoint_best.pth' # XXX hardcoded # model_path=model_list[0]
 testsize=512
-index=100
+index=134
 if not(os.path.exists(outputname)):
     os.mkdir(outputname)
     
-with open('data/files/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -58,7 +58,7 @@ else:
 # Configuration
 
 # Label list
-with open('testset/labels.txt') as f:
+with open('Zhou_2023/UNET/data/val/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -82,14 +82,37 @@ else:
     image_original_true = np.zeros((testsize,testsize,3))
 
 mrc1=mrcfile.open(image_path)
-data1=mrc1.data+128
+
+vmin = np.percentile(mrc1.data, 5) # np.min(mrc1.data)
+vmax = np.percentile(mrc1.data, 95) # np.max(mrc1.data)
+z,x,y=mrc1.data.shape
+plt.figure()
+plt.imshow(mrc1.data[z//2, :, :], vmin = vmin, vmax = vmax, cmap = 'gray')
+plt.savefig('result/vis/image0_0.png')
+breakpoint()
+data1= mrc1.data # data1=mrc1.data+128
 image= np.tile(np.expand_dims(data1[index,:,:],2),(1,1,3))
+
+crop_size = min(image.shape[0],image.shape[1])
+image = image[:crop_size,:crop_size,:]
 
 #image = cv2.imread(image_path, cv2.IMREAD_COLOR).astype(float)
 scaley = testsize / image.shape[0]
 scalex = testsize / image.shape[1]
+breakpoint()
+image = 255.*(image - vmin)/(vmax - vmin) 
 
+plt.figure()
+plt.imshow(image[:,:,0], cmap='gray')
+plt.savefig('result/vis/image3.png')
+
+plt.figure()
+plt.imshow(image.astype(np.uint8))
+plt.savefig('result/vis/image0.png')
 image = cv2.resize(image, dsize=None, fx=scalex, fy=scaley)
+plt.figure()
+plt.imshow(image.astype(np.uint8))
+plt.savefig('result/vis/image1.png')
 
 #image = 128+40*scale( image[:,:,0], axis=0, with_mean=True, with_std=True, copy=True )
 #image[image>=255]=255
@@ -102,10 +125,10 @@ image = cv2.resize(image, dsize=None, fx=scalex, fy=scaley)
 #image = np.asarray(image_sharped)
 contrast = 0
 
-#enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
-#contrast = 5
-#image_contrasted = enh_con.enhance(contrast)
-#image = np.asarray(image_contrasted)
+# enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
+# contrast = 5
+# image_contrasted = enh_con.enhance(contrast)
+# image = np.asarray(image_contrasted)
 
 #enh_bri = ImageEnhance.Brightness(Image.fromarray(image.astype(np.uint8)))
 #brightness = 1.5
@@ -135,8 +158,8 @@ labelmap = np.argmax(outputsee, axis=0)
 labels = np.unique(labelmap)
 
 # Show results
-rows = np.floor(np.sqrt(len(labels) ))
-cols = np.ceil((len(labels) + 5) / rows)
+rows = int(np.floor(np.sqrt(len(labels))))
+cols = int(np.ceil((len(labels) + 5) / rows))
 
 plt.figure(figsize=(30, 10))
 ax = plt.subplot(rows, cols, 1)

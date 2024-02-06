@@ -28,13 +28,13 @@ iftureavail=True
 
 
 model_path_root='checkpoint/'
-image_path = 'data/val/200_3_data.png'
+image_path = 'val/200_3_data.png'
 model_list=glob(model_path_root+'*.pth')
 model_list.sort()
 model_path=model_list[0]
+model_path = 'checkpoint/checkpoint_best.pth' # XXX hardcoded
 testsize=512
-
-with open('data/files/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -52,7 +52,7 @@ else:
 # Configuration
 
 # Label list
-with open('data/files/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -124,8 +124,8 @@ labelmap = np.argmax(outputsee, axis=0)
 labels = np.unique(labelmap)
 
 # Show results
-rows = np.floor(np.sqrt(len(labels) ))
-cols = np.ceil((len(labels) + 5) / rows)
+rows = int(np.floor(np.sqrt(len(labels) )))
+cols = int(np.ceil((len(labels) + 5) / rows))
 
 plt.figure(figsize=(30, 10))
 ax = plt.subplot(rows, cols, 1)
