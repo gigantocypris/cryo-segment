@@ -75,6 +75,8 @@ Line 32 : image_path = 'mon_t1_trimmed.rec.nad' #which file used for test.
 Line 36 : model_path=model_list[0] #which model used for test.
 Line 38 : index=100 #which slice used for test.
 
+# STOPPED HERE
+> python Zhou_2023/UNET/visunetmen_mrc.py
 3.5 test model on all slices of real membrane files.
 Run the code "visunetmen_mrc.py",change the configuration as below. 
 

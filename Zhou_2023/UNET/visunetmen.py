@@ -29,7 +29,8 @@ test_type='ciro'
 modeltype='unet'
 iftureavail=False
 model_path_root='checkpoint/'
-image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE2'
+# image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE2'
+image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE13'
 outputname=image_path[:-len(os.path.basename(image_path))]+'/test1'
 model_list=glob(model_path_root+'*.pth')
 model_list.sort()
@@ -83,14 +84,22 @@ else:
 
 mrc1=mrcfile.open(image_path)
 
-vmin = np.percentile(mrc1.data, 5) # np.min(mrc1.data)
-vmax = np.percentile(mrc1.data, 95) # np.max(mrc1.data)
-z,x,y=mrc1.data.shape
-plt.figure()
-plt.imshow(mrc1.data[z//2, :, :], vmin = vmin, vmax = vmax, cmap = 'gray')
-plt.savefig('result/vis/image0_0.png')
-breakpoint()
+# vmin = np.percentile(mrc1.data, 5)
+# vmax = np.percentile(mrc1.data, 95)
+
+# vmin = np.min(mrc1.data)
+# vmax = np.max(mrc1.data)
+# z,x,y=mrc1.data.shape
+
+# img = (mrc1.data[z//2, :, :]-vmin)/(vmax-vmin)
+# img = 255*img
+# plt.figure(); plt.imshow(img, vmin = 0, vmax = 255, cmap = 'gray'); plt.savefig('result/vis/image0_2.png')
+# plt.figure(); plt.imshow(img.astype(np.uint8), vmin = 0, vmax = 255, cmap = 'gray'); plt.savefig('result/vis/image0_3.png')
+# breakpoint()
+
 data1= mrc1.data # data1=mrc1.data+128
+vmin = np.min(data1)
+vmax = np.max(data1)
 image= np.tile(np.expand_dims(data1[index,:,:],2),(1,1,3))
 
 crop_size = min(image.shape[0],image.shape[1])
@@ -99,20 +108,10 @@ image = image[:crop_size,:crop_size,:]
 #image = cv2.imread(image_path, cv2.IMREAD_COLOR).astype(float)
 scaley = testsize / image.shape[0]
 scalex = testsize / image.shape[1]
-breakpoint()
+
 image = 255.*(image - vmin)/(vmax - vmin) 
 
-plt.figure()
-plt.imshow(image[:,:,0], cmap='gray')
-plt.savefig('result/vis/image3.png')
-
-plt.figure()
-plt.imshow(image.astype(np.uint8))
-plt.savefig('result/vis/image0.png')
 image = cv2.resize(image, dsize=None, fx=scalex, fy=scaley)
-plt.figure()
-plt.imshow(image.astype(np.uint8))
-plt.savefig('result/vis/image1.png')
 
 #image = 128+40*scale( image[:,:,0], axis=0, with_mean=True, with_std=True, copy=True )
 #image[image>=255]=255
@@ -123,12 +122,15 @@ plt.savefig('result/vis/image1.png')
 #sharpness = 10
 #image_sharped = enh_sha.enhance(sharpness)
 #image = np.asarray(image_sharped)
-contrast = 0
 
-# enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
-# contrast = 5
-# image_contrasted = enh_con.enhance(contrast)
-# image = np.asarray(image_contrasted)
+no_contrast = False
+if no_contrast:
+    contrast = 0
+else:
+    enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
+    contrast = 10
+    image_contrasted = enh_con.enhance(contrast)
+    image = np.asarray(image_contrasted)
 
 #enh_bri = ImageEnhance.Brightness(Image.fromarray(image.astype(np.uint8)))
 #brightness = 1.5
@@ -137,7 +139,8 @@ contrast = 0
 
 image_original = image.astype(np.uint8)
 
-image = torch.from_numpy(image.transpose(2, 0, 1)).float().unsqueeze(0)
+image = torch.tensor(image.transpose(2, 0, 1)).float().unsqueeze(0)
+# image = torch.from_numpy(image.transpose(2, 0, 1)).float().unsqueeze(0)
 image = image.to(device)
 
 # Inference
