@@ -164,3 +164,5 @@ ciro/*
 *.png
 checkpoint/*
 result/*
+*.pth
+*.png
