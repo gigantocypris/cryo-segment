@@ -24,17 +24,23 @@ https://github.com/chanzuckerberg/cryoet-data-portal/tree/main
 ## Getting Started after Setup:
 
 Log on to Perlmutter
-
+take -u nksauter emd_10439.map.gz
 
 > module load python
 > module load pytorch/2.1.0-cu12
 > conda activate cryo
 > cd /global/cfs/cdirs/m3562/users/vidyagan/cryo-segment
 
+"Take" data:
+
+
 Running the Zhou et al pipeline:
 
+> mkdir checkpoint
+> mkdir ciro
+> cp Zhou_2023/UNET/data/files/*.txt ciro/
 > python Zhou_2023/UNET/data/createcirosimnewpart.py (make sure line 118 is "dir_name = 'ciro'" creates ciro folder in working directory. copy train.txt, test.txt and labels.txt to this folder, make a "checkpoint" folder in the working directory)
-> python Zhou_2023/UNET/train.py -e NUM_EPOCHS
+> python Zhou_2023/UNET/train.py -e NUM_EPOCHS (try 50 epochs to start, 500 epochs for production)
 
 Creating the test images:
 Change Line 118 of "Zhou_2023/UNET/data/createcirosimnewpart.py"  to dir_name='val' and run the code to generate the test data. (originally, dir_name = 'ciro')
