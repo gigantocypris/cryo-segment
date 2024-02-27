@@ -2,6 +2,9 @@
 
 ## Quick start: https://chanzuckerberg.github.io/cryoet-data-portal/cryoet_data_portal_docsite_quick_start.html
 
+Upload file to Perlmutter:
+scp /Users/VGanapati/Dropbox/XFEL_LBNL/cryo_ET/Liposome_Data/mon_t1_trimmed.rec.nad vidyagan@saul-p1.nersc.gov:/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment
+
 Log on to Perlmutter
 > cd /global/cfs/cdirs/m3562/users/vidyagan
 > git clone https://github.com/vganapati/cryo-segment.git
