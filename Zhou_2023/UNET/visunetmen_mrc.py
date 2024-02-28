@@ -17,8 +17,8 @@ from torchvision import transforms
 import cv2
 import matplotlib.pyplot as plt
 from glob import glob
-from libsunet.unet import UNet, UNetsmall
-from libsunet.utils import scores,dense_crf
+from unet import UNetsmall
+from utils import scores
 from sklearn.preprocessing import scale
 import mrcfile
 
@@ -29,16 +29,16 @@ modeltype='unet'
 iftureavail=False
 
 model_path_root='checkpoint/'
-image_path = 'mon_t1_trimmed.rec.nad'
+image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/mon_t1_trimmed.rec.nad'
 
 model_list=glob(model_path_root+'*.pth')
 model_list.sort()
-model_path=model_list[0]
+model_path='checkpoint/checkpoint_450.pth'
 testsize=512
 
 
     
-with open('data/files/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -56,7 +56,7 @@ else:
 # Configuration
 
 # Label list
-with open('testset/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")

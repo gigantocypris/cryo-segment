@@ -80,21 +80,25 @@ Need MRC file:
 /global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE13
 
 Line 31 : model_path_root='checkpoint/' #models directory.
-Line 32 : image_path = 'mon_t1_trimmed.rec.nad' #which file used for test.
-Line 36 : model_path=model_list[0] #which model used for test.
+Line 32 : image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/mon_t1_trimmed.rec.nad' #which file used for test.
+Line 36 : model_path=model_path='checkpoint/checkpoint_450.pth' #model_list[0] #which model used for test.
 Line 38 : index=100 #which slice used for test.
 
-# STOPPED HERE
 > python Zhou_2023/UNET/visunetmen_mrc.py
 3.5 test model on all slices of real membrane files.
 Run the code "visunetmen_mrc.py",change the configuration as below. 
 
 Line 31 : model_path_root='checkpoint/' #models directory.
-Line 32 : image_path = 'mon_t1_trimmed.rec.nad' #which file used for test.
-Line 36 : model_path=model_list[0] #which model used for test.
+Line 32 : image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/mon_t1_trimmed.rec.nad' #which file used for test.
+Line 36 : model_path=model_path='checkpoint/checkpoint_450.pth' #model_list[0] #which model used for test.
 
+Results will be saved in the same folder as mon_t1_trimmed.rec.nad (e.g. output-cryo-segment)
 Next steps:
 
-RL
-RegionMerge
-GP3D
+# RL
+
+> python Zhou_2023/RL/mainall.py
+> python Zhou_2023/RL/main7.py
+
+# RegionMerge
+# GP3D

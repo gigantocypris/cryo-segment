@@ -18,8 +18,8 @@ from torchvision import transforms
 import cv2
 import matplotlib.pyplot as plt
 from glob import glob
-from unet import UNet, UNetsmall
-from utils import scores #,dense_crf
+from unet import UNetsmall
+from utils import scores
 from sklearn.preprocessing import scale
 import mrcfile
 
@@ -29,13 +29,11 @@ test_type='ciro'
 modeltype='unet'
 iftureavail=False
 model_path_root='checkpoint/'
-# image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE2'
-# image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/dataset_10010_TE13'
 image_path = '/global/cfs/cdirs/m3562/users/vidyagan/output-cryo-segment/mon_t1_trimmed.rec.nad'
 outputname=image_path[:-len(os.path.basename(image_path))]+'/test1'
 model_list=glob(model_path_root+'*.pth')
 model_list.sort()
-model_path = 'checkpoint/checkpoint_450.pth' # XXX hardcoded # model_path=model_list[0]
+model_path='checkpoint/checkpoint_450.pth'
 testsize=512
 index=100
 if not(os.path.exists(outputname)):
@@ -60,7 +58,7 @@ else:
 # Configuration
 
 # Label list
-with open('Zhou_2023/UNET/data/val/labels.txt') as f:
+with open('Zhou_2023/UNET/data/files/labels.txt') as f:
     classes = {}
     for label in f:
         label = label.rstrip().split("\t")
@@ -84,33 +82,12 @@ else:
     image_original_true = np.zeros((testsize,testsize,3))
 
 mrc1=mrcfile.open(image_path)
-
-# vmin = np.percentile(mrc1.data, 5)
-# vmax = np.percentile(mrc1.data, 95)
-
-# vmin = np.min(mrc1.data)
-# vmax = np.max(mrc1.data)
-# z,x,y=mrc1.data.shape
-
-# img = (mrc1.data[z//2, :, :]-vmin)/(vmax-vmin)
-# img = 255*img
-# plt.figure(); plt.imshow(img, vmin = 0, vmax = 255, cmap = 'gray'); plt.savefig('result/vis/image0_2.png')
-# plt.figure(); plt.imshow(img.astype(np.uint8), vmin = 0, vmax = 255, cmap = 'gray'); plt.savefig('result/vis/image0_3.png')
-# breakpoint()
-
-data1= mrc1.data + 128 # data1=mrc1.data
-vmin = np.min(data1)
-vmax = np.max(data1)
+data1=mrc1.data+128
 image= np.tile(np.expand_dims(data1[index,:,:],2),(1,1,3))
-
-crop_size = min(image.shape[0],image.shape[1])
-image = image[:crop_size,:crop_size,:]
 
 #image = cv2.imread(image_path, cv2.IMREAD_COLOR).astype(float)
 scaley = testsize / image.shape[0]
 scalex = testsize / image.shape[1]
-
-image = 255.*(image - vmin)/(vmax - vmin) 
 
 image = cv2.resize(image, dsize=None, fx=scalex, fy=scaley)
 
@@ -123,15 +100,12 @@ image = cv2.resize(image, dsize=None, fx=scalex, fy=scaley)
 #sharpness = 10
 #image_sharped = enh_sha.enhance(sharpness)
 #image = np.asarray(image_sharped)
+contrast = 0
 
-no_contrast = False
-if no_contrast:
-    contrast = 0
-else:
-    enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
-    contrast = 10
-    image_contrasted = enh_con.enhance(contrast)
-    image = np.asarray(image_contrasted)
+#enh_con = ImageEnhance.Contrast(Image.fromarray(image.astype(np.uint8)))
+#contrast = 5
+#image_contrasted = enh_con.enhance(contrast)
+#image = np.asarray(image_contrasted)
 
 #enh_bri = ImageEnhance.Brightness(Image.fromarray(image.astype(np.uint8)))
 #brightness = 1.5
@@ -140,15 +114,13 @@ else:
 
 image_original = image.astype(np.uint8)
 
-image = torch.tensor(image.transpose(2, 0, 1)).float().unsqueeze(0)
-# image = torch.from_numpy(image.transpose(2, 0, 1)).float().unsqueeze(0)
+image = torch.from_numpy(image.transpose(2, 0, 1)).float().unsqueeze(0)
 image = image.to(device)
 
 # Inference
 output = model(image)
 output_original=output
 output_original_label=np.argmax(output,axis=1)
-breakpoint()
 outputnumpy=output_original.numpy()
 outputcrf=np.squeeze(np.concatenate(outputnumpy, axis = 1))
 
@@ -156,14 +128,14 @@ outputcrf=np.squeeze(np.concatenate(outputnumpy, axis = 1))
 if crf:
     outputsee = dense_crf(image_original, outputcrf)
 else:
-    outputsee =outputcrf
+    outputsee = outputcrf
 #print(output)
 labelmap = np.argmax(outputsee, axis=0)
 #print(labelmap)
 labels = np.unique(labelmap)
 
 # Show results
-rows = int(np.floor(np.sqrt(len(labels))))
+rows = int(np.floor(np.sqrt(len(labels) )))
 cols = int(np.ceil((len(labels) + 5) / rows))
 
 plt.figure(figsize=(30, 10))
