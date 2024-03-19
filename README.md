@@ -10,7 +10,8 @@ Log on to Perlmutter
 > git clone https://github.com/vganapati/cryo-segment.git
 
 > module load python
-> module load pytorch/2.1.0-cu12
+> module load pytorch/2.0.1
+> # module load pytorch/2.1.0-cu12
 > conda create -n cryo
 > conda activate cryo
 
@@ -32,9 +33,11 @@ Log on to Perlmutter
 > take -u nksauter emd_10439.map.gz
 
 > module load python
-> module load pytorch/2.1.0-cu12
+> module load pytorch/2.0.1
+> # module load pytorch/2.1.0-cu12
 > conda activate cryo
 > cd /global/cfs/cdirs/m3562/users/vidyagan/cryo-segment
+
 
 Running the Zhou et al pipeline:
 
